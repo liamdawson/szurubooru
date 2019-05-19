@@ -22,8 +22,12 @@ def start_password_reset(
                 user_name))
     token = auth.generate_authentication_token(user)
 
-    if 'HTTP_ORIGIN' in ctx.env:
+    if 'SERVER_NAME' in ctx.env:
+        url = ctx.env['SERVER_NAME'].rstrip('/')
+    elif 'HTTP_ORIGIN' in ctx.env:
         url = ctx.env['HTTP_ORIGIN'].rstrip('/')
+    elif 'HTTP_HOST' in ctx.env:
+        url = ctx.env['HTTP_HOST'].rstrip('/')
     else:
         url = ''
     url += '/password-reset/%s:%s' % (user.name, token)
